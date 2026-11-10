@@ -718,11 +718,11 @@
     const commentFont = font(29, false, false);
     let y = 1412, totalLines = 0, shown = 0, overflow = false;
     if (comments.length) {
-      for (const c of comments.slice(0, 5)) {
+      for (const c of comments.slice(0, 8)) {
         const name = clamp(c.name || "家人", 10);
         const content = clamp(c.content || "", 120);
         const lines = wrapText(ctx, `${name}：${content}`, 610, 2);
-        if (totalLines + lines.length > 6) { overflow = true; break; }
+        if (totalLines + lines.length > 7) { overflow = true; break; }
         ctx.font = commentFont;
         ctx.fillStyle = rgb(text, 0.9);
         lines.forEach((line) => {
