@@ -392,15 +392,7 @@
         e.preventDefault();
         return;
       }
-      const cfg = SnapStory.getConfig();
-      if (!cfg.asrKey) {
-        $("ai-modal").classList.remove("hidden");
-        $("asr-key").focus();
-        showVoiceFallback("请先在设置里填「硅基流动 API Key」，保存后再按话筒");
-        e.preventDefault();
-        return;
-      }
-      startCloudRecording(cfg.asrKey);
+      startCloudRecording(SnapStory.getConfig().asrKey);
       e.preventDefault(); // 阻止 click 触发两次
     }
 
@@ -423,9 +415,7 @@
       keyboardBtn.addEventListener("click", focusKeyboardVoice);
     }
 
-    $("voice-tip").textContent = SnapStory.getConfig().asrKey
-      ? "按住话筒说话，松开自动转文字"
-      : "首次使用请点右上角 AI 填语音 Key；";
+    $("voice-tip").textContent = "按住话筒说话，松开自动转文字";
   }
 
   async function startCloudRecording(key) {
@@ -542,7 +532,7 @@
       if (!resp.ok) {
         const msg = data.message || (data.error && data.error.message) || ("HTTP " + resp.status);
         if (resp.status === 401 || resp.status === 403) {
-          showVoiceFallback("语音 Key 无效，请点右上角 AI 重新填");
+          showVoiceFallback("语音服务暂时不可用，请稍后再试");
         } else {
           showVoiceFallback("语音转文字失败：" + msg);
         }
@@ -1303,44 +1293,6 @@
     setTimeout(() => location.reload(), 1000);
   });
 
-  // ---------------- AI 设置 ----------------
-  function updateAiHint() {
-    const cfg = SnapStory.getConfig();
-    const aiOk = !!(cfg.key && cfg.model);
-    const hint = $("ai-hint");
-    hint.textContent = aiOk ? "照片 AI 已开启。点右上角 AI 可以设置。" : "";
-    hint.classList.toggle("hidden", !aiOk);
-  }
-
-  $("ai-btn").addEventListener("click", () => {
-    const cfg = SnapStory.getConfig();
-    $("ark-key").value = cfg.key || "";
-    $("ark-model").value = cfg.model || "";
-    $("asr-key").value = cfg.asrKey || "";
-    $("ai-modal").classList.remove("hidden");
-  });
-
-  $("ai-save").addEventListener("click", () => {
-    const key = $("ark-key").value.trim();
-    const model = $("ark-model").value.trim();
-    const asrKey = $("asr-key").value.trim();
-    SnapStory.setConfig({ key, model, asrKey });
-    updateAiHint();
-    $("ai-modal").classList.add("hidden");
-    if (asrKey && voiceMode === "cloud") $("voice-tip").textContent = "语音已开启，点话筒说话";
-    toast(key && model ? "照片 AI 已开启" : "已保存");
-  });
-
-  $("ai-clear").addEventListener("click", () => {
-    SnapStory.setConfig({});
-    $("ark-key").value = "";
-    $("ark-model").value = "";
-    $("asr-key").value = "";
-    updateAiHint();
-    if (voiceMode === "cloud") $("voice-tip").textContent = "语音 Key 已清除，点话筒可重新设置";
-    toast("已清除 AI 和语音设置");
-  });
-
   // ---------------- 最近的海报 ----------------
   let galleryToken = 0;
   let historyToken = 0;
@@ -1470,6 +1422,5 @@
     });
   });
 
-  updateAiHint();
   setStep(1);
 })();

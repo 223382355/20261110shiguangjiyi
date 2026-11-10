@@ -298,10 +298,22 @@
   }
 
   // ---------------- AI（火山方舟，浏览器可跨域） ----------------
+  // 内置默认配置：用户无需填写 Key
+  const BUILTIN_CONFIG = {
+    key: "apikey-20261103100008-4gvf9",
+    model: "",
+    asrKey: "sk-zyuavpdrawcubulnnyykqozyywufbfrllczxpnstmxbabtqo"
+  };
   function getConfig() {
+    let saved = {};
     try {
-      return JSON.parse(localStorage.getItem(storageKey("snapstory.ark")) || "{}");
-    } catch (e) { return {}; }
+      saved = JSON.parse(localStorage.getItem(storageKey("snapstory.ark")) || "{}") || {};
+    } catch (e) { saved = {}; }
+    const cfg = Object.assign({}, BUILTIN_CONFIG);
+    if (saved.key) cfg.key = saved.key;
+    if (saved.model) cfg.model = saved.model;
+    if (saved.asrKey) cfg.asrKey = saved.asrKey;
+    return cfg;
   }
   function setConfig(cfg) {
     localStorage.setItem(storageKey("snapstory.ark"), JSON.stringify(cfg || {}));
