@@ -736,7 +736,7 @@
       if (overflow) {
         ctx.font = font(21, false, false);
         ctx.fillStyle = rgb(soft);
-        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, y + 12);
+        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, 1724);
       }
     } else {
       ctx.font = font(27, false, false);
