@@ -775,24 +775,40 @@
   // ---------------- 本机存储（按 userId 隔离） ----------------
   const USER_KEY = "snapstory.userId";
 
+  const ID_RE = /^\d{8}$/;
+
   function genId() {
-    const bytes = new Uint8Array(9);
+    const bytes = new Uint8Array(8);
     if (global.crypto && global.crypto.getRandomValues) {
       global.crypto.getRandomValues(bytes);
     } else {
       for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
     }
-    let bin = "";
-    bytes.forEach((b) => { bin += String.fromCharCode(b); });
-    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    // 8 位数字，首位 1-9，方便客户口述和记忆
+    let s = String(1 + (bytes[0] % 9));
+    for (let i = 1; i < 8; i++) s += String(bytes[i] % 10);
+    return s;
+  }
+
+  // 旧版本用过随机串，升级时把旧身份名下的数据搬到新的 8 位数字身份下
+  function migrateUser(oldId, newId) {
+    ["snapstory.posters.v1", "snapstory.familyNames", "snapstory.ark"].forEach((base) => {
+      const oldKey = base + "." + oldId;
+      const val = localStorage.getItem(oldKey);
+      if (val != null) {
+        localStorage.setItem(base + "." + newId, val);
+        localStorage.removeItem(oldKey);
+      }
+    });
   }
 
   function getUserId() {
     let id = localStorage.getItem(USER_KEY);
-    if (!id) {
-      id = genId();
-      localStorage.setItem(USER_KEY, id);
-    }
+    if (id && ID_RE.test(id)) return id;
+    const oldId = id;
+    id = genId();
+    if (oldId) migrateUser(oldId, id);
+    localStorage.setItem(USER_KEY, id);
     return id;
   }
 
