@@ -623,13 +623,16 @@
     ctx.fillStyle = rgb(text);
     ctx.font = font(40, t.serif, true);
     ctx.fillText(recipe.dateText || "", 90, 58);
+    const dateW = ctx.measureText(recipe.dateText || "").width;
 
     // 天气胶囊
+    let chipLeft = W - 90;
     if (recipe.weather) {
       ctx.font = font(28, false, false);
       const tw = ctx.measureText(recipe.weather).width;
       const pw = tw + 44;
       const px = W - 90 - pw;
+      chipLeft = px;
       ctx.fillStyle = t.chip;
       roundRect(ctx, px, 54, pw, 54, 27);
       ctx.fill();
@@ -637,15 +640,27 @@
       ctx.fillText(recipe.weather, px + 22, 64);
     }
 
-    // 地点
+    // 地点：放在天气左侧同一行；空间不足时退回第二行
     if (recipe.location) {
-      ctx.fillStyle = rgb(accent, 0.78);
-      ctx.beginPath();
-      ctx.arc(97, 129, 5, 0, Math.PI * 2);
-      ctx.fill();
       ctx.font = font(28, false, false);
-      ctx.fillStyle = rgb(soft);
-      ctx.fillText(recipe.location, 114, 116);
+      const lw = ctx.measureText(recipe.location).width;
+      const sameRowX = recipe.weather ? chipLeft - 24 - lw : W - 90 - lw;
+      if (recipe.weather && sameRowX >= 90 + dateW + 24) {
+        ctx.fillStyle = rgb(accent, 0.78);
+        ctx.beginPath();
+        ctx.arc(sameRowX - 14, 81, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = rgb(soft);
+        ctx.fillText(recipe.location, sameRowX, 68);
+      } else {
+        ctx.fillStyle = rgb(accent, 0.78);
+        ctx.beginPath();
+        ctx.arc(97, 129, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.font = font(28, false, false);
+        ctx.fillStyle = rgb(soft);
+        ctx.fillText(recipe.location, 114, 116);
+      }
     }
 
     // 照片相框 + 阴影
@@ -683,32 +698,31 @@
 
     // 事件梗概
     if (recipe.event) {
-      const eventLine = /^今天/.test(recipe.event) ? recipe.event : "今天 · " + recipe.event;
-      drawBlock(ctx, eventLine, 92, 1286, font(29, false, false), rgb(soft), 880, 42, 2);
+      drawBlock(ctx, recipe.event, 92, 1246, font(29, false, false), rgb(soft), 880, 42, 2);
     }
 
     // 分隔线
     ctx.strokeStyle = rgb(accent, 0.27);
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(92, 1366);
-    ctx.lineTo(720, 1366);
+    ctx.moveTo(92, 1336);
+    ctx.lineTo(720, 1336);
     ctx.stroke();
 
     // 家人留言
     ctx.font = font(28, false, true);
     ctx.fillStyle = rgb(accent);
-    ctx.fillText("家人的留言", 92, 1392);
+    ctx.fillText("家人的留言", 92, 1362);
 
     const comments = Array.isArray(recipe.comments) ? recipe.comments : [];
     const commentFont = font(29, false, false);
-    let y = 1442, totalLines = 0, shown = 0, overflow = false;
+    let y = 1412, totalLines = 0, shown = 0, overflow = false;
     if (comments.length) {
-      for (const c of comments.slice(0, 3)) {
+      for (const c of comments.slice(0, 5)) {
         const name = clamp(c.name || "家人", 10);
         const content = clamp(c.content || "", 120);
         const lines = wrapText(ctx, `${name}：${content}`, 610, 2);
-        if (totalLines + lines.length > 4) { overflow = true; break; }
+        if (totalLines + lines.length > 6) { overflow = true; break; }
         ctx.font = commentFont;
         ctx.fillStyle = rgb(text, 0.9);
         lines.forEach((line) => {
@@ -722,13 +736,13 @@
       if (overflow) {
         ctx.font = font(21, false, false);
         ctx.fillStyle = rgb(soft);
-        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, 1694);
+        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, y + 12);
       }
     } else {
       ctx.font = font(27, false, false);
       ctx.fillStyle = rgb(soft);
-      ctx.fillText("还没有留言，", 92, 1442);
-      ctx.fillText("扫码写下第一句话吧", 92, 1484);
+      ctx.fillText("还没有留言，", 92, 1412);
+      ctx.fillText("扫码写下第一句话吧", 92, 1454);
     }
 
     // 品牌
