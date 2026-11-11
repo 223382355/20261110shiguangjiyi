@@ -631,48 +631,51 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // 日期
-    ctx.fillStyle = rgb(text);
-    ctx.font = font(60, t.serif, true);
-    ctx.fillText(recipe.dateText || "", 90, 58);
-    const dateW = ctx.measureText(recipe.dateText || "").width;
+    // 头部：日期（左）+ 地点（中）+ 天气胶囊（右）—— 始终同一行，空间不够自动缩小地点字号
+    const H_Y = 76, PAD = 90;
 
-    // 天气胶囊
-    let chipLeft = W - 90;
+    ctx.font = font(58, t.serif, true);
+    ctx.fillStyle = rgb(text);
+    const dateTxt = recipe.dateText || "";
+    ctx.fillText(dateTxt, PAD, H_Y);
+    const dateW = ctx.measureText(dateTxt).width;
+
+    // 天气胶囊固定在右侧
+    let chipX = W - PAD;
     if (recipe.weather) {
-      ctx.font = font(42, false, false);
+      ctx.font = font(66, false, false);
       const tw = ctx.measureText(recipe.weather).width;
       const pw = tw + 44;
-      const px = W - 90 - pw;
-      chipLeft = px;
+      chipX -= pw;
       ctx.fillStyle = t.chip;
-      roundRect(ctx, px, 54, pw, 54, 27);
+      roundRect(ctx, chipX, H_Y - 6, pw, 54, 27);
       ctx.fill();
       ctx.fillStyle = rgb(t.chipText || text);
-      ctx.fillText(recipe.weather, px + 22, 64);
+      ctx.fillText(recipe.weather, chipX + 22, H_Y + 4);
     }
 
-    // 地点：放在天气左侧同一行；空间不足时退回第二行
+    // 地点挤进日期和天气之间；实在装不下就贴在天气右侧（仍然同一行）
     if (recipe.location) {
-      ctx.font = font(42, false, false);
-      const lw = ctx.measureText(recipe.location).width;
-      const sameRowX = recipe.weather ? chipLeft - 24 - lw : W - 90 - lw;
-      if (recipe.weather && sameRowX >= 90 + dateW + 24) {
-        ctx.fillStyle = rgb(accent, 0.78);
-        ctx.beginPath();
-        ctx.arc(sameRowX - 14, 81, 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = rgb(soft);
-        ctx.fillText(recipe.location, sameRowX, 68);
-      } else {
-        ctx.fillStyle = rgb(accent, 0.78);
-        ctx.beginPath();
-        ctx.arc(97, 129, 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.font = font(42, false, false);
-        ctx.fillStyle = rgb(soft);
-        ctx.fillText(recipe.location, 114, 116);
+      let locFont = 53;
+      ctx.font = font(locFont, false, false);
+      let space = (chipX - 24) - (PAD + dateW + 24);
+      while (ctx.measureText(recipe.location).width + 20 > space && locFont > 26) {
+        locFont -= 3;
+        ctx.font = font(locFont, false, false);
       }
+      let locX = PAD + dateW + 24;
+      if (locX + ctx.measureText(recipe.location).width + 16 > chipX) {
+        locX = chipX + 22;
+        if (recipe.weather) {
+          locX += ctx.measureText(recipe.weather).width + 22;
+        }
+      }
+      ctx.fillStyle = rgb(accent, 0.78);
+      ctx.beginPath();
+      ctx.arc(locX - 14, H_Y + 24, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = rgb(soft);
+      ctx.fillText(recipe.location, locX, H_Y + 8);
     }
 
     // 照片相框 + 阴影
@@ -722,12 +725,12 @@
     ctx.stroke();
 
     // 家人留言
-    ctx.font = font(42, false, true);
+    ctx.font = font(52, false, true);
     ctx.fillStyle = rgb(accent);
     ctx.fillText("家人的留言", 92, 1362);
 
     const comments = Array.isArray(recipe.comments) ? recipe.comments : [];
-    const commentFont = font(44, false, false);
+    const commentFont = font(55, false, false);
     let y = 1422, totalLines = 0, shown = 0, overflow = false;
     if (comments.length) {
       for (const c of comments.slice(0, 8)) {
@@ -746,19 +749,19 @@
       }
       if (comments.length > shown) overflow = true;
       if (overflow) {
-        ctx.font = font(32, false, false);
+        ctx.font = font(40, false, false);
         ctx.fillStyle = rgb(soft);
         ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, 1718);
       }
     } else {
-      ctx.font = font(41, false, false);
+      ctx.font = font(51, false, false);
       ctx.fillStyle = rgb(soft);
       ctx.fillText("还没有留言，", 92, 1422);
       ctx.fillText("扫码写下第一句话吧", 92, 1494);
     }
 
     // 品牌
-    ctx.font = font(34, false, false);
+    ctx.font = font(42, false, false);
     ctx.fillStyle = rgb(soft, 0.75);
     ctx.fillText("记忆相册 · 把今天留成一幅画", 92, 1768);
 
@@ -787,10 +790,10 @@
     }
 
     ctx.textAlign = "center";
-    ctx.font = font(39, false, true);
+    ctx.font = font(49, false, true);
     ctx.fillStyle = "rgb(45,40,34)";
     ctx.fillText("扫码看故事", 882, 1712);
-    ctx.font = font(32, false, false);
+    ctx.font = font(40, false, false);
     ctx.fillStyle = "rgb(130,120,108)";
     ctx.fillText("给TA留句话", 882, 1751);
     ctx.textAlign = "left";
