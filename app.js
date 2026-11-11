@@ -774,7 +774,8 @@
     $("page-link").href = pageUrl;
 
     renderInsight(recipe, ai);
-    // 不再自动写入最近海报列表；用户点下载或主动保存时再存
+    const ok = SnapStory.savePoster(recipe);
+    if (!ok) toast("本机存储空间不足，留言页可能打不开");
 
     setStep("result");
     startCommentSync(recipe);

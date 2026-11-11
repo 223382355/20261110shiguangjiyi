@@ -758,10 +758,10 @@
     }
 
     ctx.textAlign = "center";
-    ctx.font = font(49, false, true);
+    ctx.font = font(44, false, true);
     ctx.fillStyle = "rgb(45,40,34)";
     ctx.fillText("扫码看故事", 882, 1712);
-    ctx.font = font(40, false, false);
+    ctx.font = font(36, false, false);
     ctx.fillStyle = "rgb(130,120,108)";
     ctx.fillText("给TA留句话", 882, 1751);
     ctx.textAlign = "left";
