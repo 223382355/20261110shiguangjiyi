@@ -633,14 +633,14 @@
 
     // 日期
     ctx.fillStyle = rgb(text);
-    ctx.font = font(40, t.serif, true);
+    ctx.font = font(48, t.serif, true);
     ctx.fillText(recipe.dateText || "", 90, 58);
     const dateW = ctx.measureText(recipe.dateText || "").width;
 
     // 天气胶囊
     let chipLeft = W - 90;
     if (recipe.weather) {
-      ctx.font = font(28, false, false);
+      ctx.font = font(34, false, false);
       const tw = ctx.measureText(recipe.weather).width;
       const pw = tw + 44;
       const px = W - 90 - pw;
@@ -654,7 +654,7 @@
 
     // 地点：放在天气左侧同一行；空间不足时退回第二行
     if (recipe.location) {
-      ctx.font = font(28, false, false);
+      ctx.font = font(34, false, false);
       const lw = ctx.measureText(recipe.location).width;
       const sameRowX = recipe.weather ? chipLeft - 24 - lw : W - 90 - lw;
       if (recipe.weather && sameRowX >= 90 + dateW + 24) {
@@ -669,7 +669,7 @@
         ctx.beginPath();
         ctx.arc(97, 129, 5, 0, Math.PI * 2);
         ctx.fill();
-        ctx.font = font(28, false, false);
+        ctx.font = font(34, false, false);
         ctx.fillStyle = rgb(soft);
         ctx.fillText(recipe.location, 114, 116);
       }
@@ -706,11 +706,11 @@
 
     // 主文案：祝福语放在原来标题的位置
     const mainLine = recipe.blessing || FALLBACK_BLESSINGS[recipe.style] || "愿今天的好，一直留在身边";
-    drawBlock(ctx, mainLine, 90, 1124, font(50, t.serif, true), rgb(accent), 900, 64, 2);
+    drawBlock(ctx, mainLine, 90, 1124, font(58, t.serif, true), rgb(accent), 880, 74, 2);
 
     // 事件梗概
     if (recipe.event) {
-      drawBlock(ctx, recipe.event, 92, 1246, font(29, false, false), rgb(soft), 880, 42, 2);
+      drawBlock(ctx, recipe.event, 92, 1246, font(35, false, false), rgb(soft), 870, 50, 2);
     }
 
     // 分隔线
@@ -722,43 +722,43 @@
     ctx.stroke();
 
     // 家人留言
-    ctx.font = font(28, false, true);
+    ctx.font = font(34, false, true);
     ctx.fillStyle = rgb(accent);
     ctx.fillText("家人的留言", 92, 1362);
 
     const comments = Array.isArray(recipe.comments) ? recipe.comments : [];
-    const commentFont = font(29, false, false);
-    let y = 1412, totalLines = 0, shown = 0, overflow = false;
+    const commentFont = font(35, false, false);
+    let y = 1418, totalLines = 0, shown = 0, overflow = false;
     if (comments.length) {
       for (const c of comments.slice(0, 8)) {
         const name = clamp(c.name || "家人", 10);
         const content = clamp(c.content || "", 120);
-        const lines = wrapText(ctx, `${name}：${content}`, 610, 2);
-        if (totalLines + lines.length > 7) { overflow = true; break; }
+        const lines = wrapText(ctx, `${name}：${content}`, 590, 2);
+        if (totalLines + lines.length > 6) { overflow = true; break; }
         ctx.font = commentFont;
         ctx.fillStyle = rgb(text, 0.9);
         lines.forEach((line) => {
           ctx.fillText(line, 92, y);
-          y += 41;
+          y += 49;
         });
         totalLines += lines.length;
         shown += 1;
       }
       if (comments.length > shown) overflow = true;
       if (overflow) {
-        ctx.font = font(21, false, false);
+        ctx.font = font(26, false, false);
         ctx.fillStyle = rgb(soft);
-        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, 1724);
+        ctx.fillText(`还有 ${comments.length - shown} 条留言，扫码查看`, 92, 1712);
       }
     } else {
-      ctx.font = font(27, false, false);
+      ctx.font = font(33, false, false);
       ctx.fillStyle = rgb(soft);
-      ctx.fillText("还没有留言，", 92, 1412);
-      ctx.fillText("扫码写下第一句话吧", 92, 1454);
+      ctx.fillText("还没有留言，", 92, 1418);
+      ctx.fillText("扫码写下第一句话吧", 92, 1474);
     }
 
     // 品牌
-    ctx.font = font(22, false, false);
+    ctx.font = font(27, false, false);
     ctx.fillStyle = rgb(soft, 0.75);
     ctx.fillText("记忆相册 · 把今天留成一幅画", 92, 1768);
 
@@ -787,10 +787,10 @@
     }
 
     ctx.textAlign = "center";
-    ctx.font = font(25, false, true);
+    ctx.font = font(31, false, true);
     ctx.fillStyle = "rgb(45,40,34)";
     ctx.fillText("扫码看故事", 882, 1712);
-    ctx.font = font(21, false, false);
+    ctx.font = font(26, false, false);
     ctx.fillStyle = "rgb(130,120,108)";
     ctx.fillText("给TA留句话", 882, 1751);
     ctx.textAlign = "left";
