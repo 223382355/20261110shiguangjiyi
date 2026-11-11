@@ -632,7 +632,9 @@
     try {
       const captured = state.exif.date || new Date();
       const oldPhoto = Math.abs(Date.now() - captured.getTime()) > 24 * 3600 * 1000;
-      const coords = state.exif.gps || await SnapStory.getCoords(3500);
+      // 只在 EXIF 有 GPS 时查坐标，避免触发浏览器定位权限弹窗
+      // （用户不需要看到「获取地址」提示）
+      const coords = state.exif.gps || null;
 
       const [pw, ai] = await Promise.all([
         SnapStory.resolvePlaceWeather(coords, oldPhoto),
@@ -772,8 +774,7 @@
     $("page-link").href = pageUrl;
 
     renderInsight(recipe, ai);
-    const ok = SnapStory.savePoster(recipe);
-    if (!ok) toast("本机存储空间不足，留言页可能打不开");
+    // 不再自动写入最近海报列表；用户点下载或主动保存时再存
 
     setStep("result");
     startCommentSync(recipe);

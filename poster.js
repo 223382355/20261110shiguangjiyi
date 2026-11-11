@@ -632,52 +632,19 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // 头部：日期（左）+ 地点（中）+ 天气胶囊（右）—— 始终同一行，空间不够自动缩小地点字号
+    // 头部：日期 · 地点 · 天气 —— 同一行、同字号、同颜色，紧凑排布
     const H_Y = 76, PAD = 90;
+    const headFont = font(38, false, false);
+    const headColor = rgb(soft);
+    ctx.font = headFont;
+    ctx.fillStyle = headColor;
 
-    ctx.font = font(58, t.serif, true);
-    ctx.fillStyle = rgb(text);
-    const dateTxt = recipe.dateText || "";
-    ctx.fillText(dateTxt, PAD, H_Y);
-    const dateW = ctx.measureText(dateTxt).width;
-
-    // 天气胶囊固定在右侧
-    let chipX = W - PAD;
-    if (recipe.weather) {
-      ctx.font = font(66, false, false);
-      const tw = ctx.measureText(recipe.weather).width;
-      const pw = tw + 44;
-      chipX -= pw;
-      ctx.fillStyle = t.chip;
-      roundRect(ctx, chipX, H_Y - 6, pw, 54, 27);
-      ctx.fill();
-      ctx.fillStyle = rgb(t.chipText || text);
-      ctx.fillText(recipe.weather, chipX + 22, H_Y + 4);
-    }
-
-    // 地点挤进日期和天气之间；实在装不下就贴在天气右侧（仍然同一行）
-    if (recipe.location) {
-      let locFont = 53;
-      ctx.font = font(locFont, false, false);
-      let space = (chipX - 24) - (PAD + dateW + 24);
-      while (ctx.measureText(recipe.location).width + 20 > space && locFont > 26) {
-        locFont -= 3;
-        ctx.font = font(locFont, false, false);
-      }
-      let locX = PAD + dateW + 24;
-      if (locX + ctx.measureText(recipe.location).width + 16 > chipX) {
-        locX = chipX + 22;
-        if (recipe.weather) {
-          locX += ctx.measureText(recipe.weather).width + 22;
-        }
-      }
-      ctx.fillStyle = rgb(accent, 0.78);
-      ctx.beginPath();
-      ctx.arc(locX - 14, H_Y + 24, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = rgb(soft);
-      ctx.fillText(recipe.location, locX, H_Y + 8);
-    }
+    const parts = [];
+    if (recipe.dateText) parts.push(recipe.dateText);
+    if (recipe.location) parts.push(recipe.location);
+    if (recipe.weather) parts.push(recipe.weather);
+    const headLine = parts.join(" · ");
+    ctx.fillText(headLine, PAD, H_Y);
 
     // 照片相框 + 阴影
     const fx = 78, fy = 178, fw = 924, fh = 924;
