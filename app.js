@@ -849,6 +849,8 @@
   });
 
   $("download").addEventListener("click", () => {
+    // 双保险：用户点"保存海报"也写入 gallery，避免生成流程中途异常跳过 savePoster
+    if (state.recipe) SnapStory.savePoster(state.recipe);
     toast("正在保存，若没反应请长按海报保存");
   });
 

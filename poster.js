@@ -758,7 +758,7 @@
     }
 
     ctx.textAlign = "center";
-    ctx.font = font(44, false, true);
+    ctx.font = font(40, false, true);
     ctx.fillStyle = "rgb(45,40,34)";
     ctx.fillText("扫码看故事", 882, 1712);
     ctx.font = font(36, false, false);
@@ -848,7 +848,7 @@
     const all = loadAll();
     all[recipe.id] = recipe;
     const ids = Object.keys(all).sort((a, b) => (all[a].createdAt || 0) - (all[b].createdAt || 0));
-    while (ids.length > 6) delete all[ids.shift()];
+    while (ids.length > 20) delete all[ids.shift()];
     try {
       localStorage.setItem(storageKey(STORE_BASE), JSON.stringify(all));
       return true;
