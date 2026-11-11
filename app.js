@@ -646,7 +646,7 @@
         style: state.style,
         photo: state.photo,
         dateText: SnapStory.formatDateCN(captured),
-        weather: oldPhoto ? "" : (pw.weather || ""),
+        weather: pw.weather || "",
         location: pw.place || a.locationGuess || "",
         title: normalizeTitle(a.title, state.style),
         caption: a.caption || SnapStory.FALLBACK_CAPTIONS[state.style],
@@ -920,8 +920,7 @@
       $("page-link").href = pageUrl;
       $("qr-img").src = SnapStory.makeQrCanvas(pageUrl, 560).toDataURL("image/png");
       renderInsight(recipe, ai);
-      SnapStory.savePoster(recipe);
-
+      // 换风格不写入 gallery，只有首次生成才保存
       if (recipe.syncKey && window.SnapSync) {
         SnapSync.uploadPoster(dataUrl, `snapstory-${recipe.id}.jpg`, recipe.syncKey)
           .catch(() => { /* 忽略，留言仍可同步 */ });
@@ -954,8 +953,7 @@
     $("qr-img").src = SnapStory.makeQrCanvas(pageUrl, 560).toDataURL("image/png");
 
     renderInsight(recipe, ai || { aiUsed: !!recipe.aiUsed });
-    const ok = SnapStory.savePoster(recipe);
-    if (!ok) toast("本机存储空间不足，留言页可能打不开");
+    // 换文案等预览刷新不写入 gallery
 
     if (recipe.syncKey && window.SnapSync) {
       SnapSync.uploadPoster(dataUrl, `snapstory-${recipe.id}.jpg`, recipe.syncKey)

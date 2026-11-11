@@ -281,7 +281,8 @@
         if (lat == null && d.latitude != null) { lat = d.latitude; lon = d.longitude; }
       }
     } catch (e) { /* 忽略 */ }
-    if (!skipWeather && lat != null && lon != null) {
+    // 只要有经纬度就尽量查天气；仅在用户明确要求跳过、或完全没坐标时才跳过
+    if (lat != null && lon != null) {
       try {
         const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${Number(lat).toFixed(3)}&longitude=${Number(lon).toFixed(3)}&current=temperature_2m,weather_code&timezone=auto`);
         if (r.ok) {
@@ -713,7 +714,7 @@
 
     // 事件梗概
     if (recipe.event) {
-      drawBlock(ctx, recipe.event, 92, 1246, font(35, false, false), rgb(soft), 870, 50, 2);
+      drawBlock(ctx, recipe.event, 92, 1246, font(42, false, false), rgb(soft), 870, 58, 2);
     }
 
     // 分隔线
@@ -730,19 +731,19 @@
     ctx.fillText("家人的留言", 92, 1362);
 
     const comments = Array.isArray(recipe.comments) ? recipe.comments : [];
-    const commentFont = font(55, false, false);
+    const commentFont = font(44, false, false);
     let y = 1422, totalLines = 0, shown = 0, overflow = false;
     if (comments.length) {
       for (const c of comments.slice(0, 8)) {
         const name = clamp(c.name || "家人", 10);
         const content = clamp(c.content || "", 120);
-        const lines = wrapText(ctx, `${name}：${content}`, 550, 2);
-        if (totalLines + lines.length > 5) { overflow = true; break; }
+        const lines = wrapText(ctx, `${name}：${content}`, 590, 2);
+        if (totalLines + lines.length > 6) { overflow = true; break; }
         ctx.font = commentFont;
         ctx.fillStyle = rgb(text, 0.9);
         lines.forEach((line) => {
           ctx.fillText(line, 92, y);
-          y += 58;
+          y += 50;
         });
         totalLines += lines.length;
         shown += 1;
