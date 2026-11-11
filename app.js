@@ -1323,26 +1323,40 @@
     `).join("");
   }
 
-  async function openHistory(id) {
-    const recipe = SnapStory.getPoster(id);
-    if (!recipe) {
-      toast("这张海报已经不在本机了");
-      return;
-    }
+  let galleryItems = [];
+  let historyIndex = 0;
+
+  async function openHistoryAt(index) {
+    const total = galleryItems.length;
+    if (!total) return;
+    historyIndex = ((index % total) + total) % total;
+    const recipe = galleryItems[historyIndex];
+    if (!recipe) return;
+
     const token = ++historyToken;
     $("gallery-list-view").classList.add("hidden");
     $("gallery-detail-view").classList.remove("hidden");
     $("history-title").textContent = `${recipe.title || "海报"}${recipe.dateText ? " · " + recipe.dateText : ""}`;
     $("history-page-link").href = SnapStory.pageUrlFor(recipe);
 
+    const multi = total > 1;
+    $("history-counter").textContent = multi
+      ? `第 ${historyIndex + 1} 张 / 共 ${total} 张，左右滑动翻看`
+      : "";
+    $("history-prev").classList.toggle("hidden", !multi);
+    $("history-next").classList.toggle("hidden", !multi);
+
+    const poster = $("history-poster");
+    poster.style.opacity = "0.35";
     try {
       const canvas = document.createElement("canvas");
       await SnapStory.renderPoster(canvas, recipe);
       if (token !== historyToken) return;
-      $("history-poster").src = canvas.toDataURL("image/jpeg", 0.9);
+      poster.src = canvas.toDataURL("image/jpeg", 0.9);
     } catch (e) {
-      $("history-poster").src = recipe.photo || "";
+      poster.src = recipe.photo || "";
     }
+    poster.style.opacity = "1";
     renderHistoryComments(recipe);
 
     if (recipe.syncKey && window.SnapSync) {
@@ -1356,6 +1370,34 @@
     }
   }
 
+  function stepHistory(delta) {
+    if (galleryItems.length < 2) return;
+    openHistoryAt(historyIndex + delta);
+  }
+
+  (function bindHistorySwipe() {
+    const zone = $("history-swipe");
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    zone.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      startX = e.clientX;
+      startY = e.clientY;
+      tracking = true;
+    });
+    zone.addEventListener("pointerup", (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) < 45) return;
+      if (Math.abs(dx) < Math.abs(dy) * 1.3) return;
+      stepHistory(dx < 0 ? 1 : -1);
+    });
+    zone.addEventListener("pointercancel", () => { tracking = false; });
+  })();
+
   async function openGallery() {
     const token = ++galleryToken;
     showGalleryList();
@@ -1363,9 +1405,11 @@
     const grid = $("gallery-grid");
     grid.innerHTML = "";
     const items = SnapStory.listPosters();
+    galleryItems = items;
     $("gallery-empty").classList.toggle("hidden", items.length > 0);
 
-    for (const recipe of items) {
+    for (let idx = 0; idx < items.length; idx += 1) {
+      const recipe = items[idx];
       if (token !== galleryToken) return;
       const card = document.createElement("button");
       card.className = "gallery-item";
@@ -1383,7 +1427,7 @@
 
       card.appendChild(thumb);
       card.appendChild(meta);
-      card.addEventListener("click", () => openHistory(recipe.id));
+      card.addEventListener("click", () => openHistoryAt(idx));
       grid.appendChild(card);
 
       try {
@@ -1411,6 +1455,8 @@
     historyToken += 1;
     showGalleryList();
   });
+  $("history-prev").addEventListener("click", () => stepHistory(-1));
+  $("history-next").addEventListener("click", () => stepHistory(1));
 
   // ---------------- 帮助 ----------------
   $("help-btn").addEventListener("click", () => $("help-modal").classList.remove("hidden"));

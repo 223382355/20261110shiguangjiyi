@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#F7F2E8">
   <meta name="description" content="记忆相册 · 随手拍一张照片，选一种风格，生成一张带家人留言的纪念海报。">
   <title>记忆相册 · 把今天留成一幅画</title>
-  <link rel="stylesheet" href="style.css?v=20261110f">
+  <link rel="stylesheet" href="style.css?v=20261111b">
 </head>
 <body>
   <main class="app">
@@ -267,7 +267,12 @@
       <div class="hidden" id="gallery-detail-view">
         <button class="gallery-back" id="gallery-back" type="button">← 返回最近的海报</button>
         <h2 id="history-title">海报</h2>
-        <img id="history-poster" alt="历史海报">
+        <div class="history-swipe" id="history-swipe">
+          <img id="history-poster" alt="历史海报" draggable="false">
+          <button class="swipe-arrow swipe-prev hidden" id="history-prev" type="button" aria-label="上一张">‹</button>
+          <button class="swipe-arrow swipe-next hidden" id="history-next" type="button" aria-label="下一张">›</button>
+        </div>
+        <p class="swipe-hint" id="history-counter"></p>
         <div class="history-comments" id="history-comments"></div>
         <a class="btn btn-primary" id="history-page-link" target="_blank" rel="noopener">打开留言页</a>
       </div>
@@ -335,9 +340,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="qrcode.js"></script>
-  <script src="poster.js?v=20261110f"></script>
-  <script src="sync.js?v=20261110f"></script>
-  <script src="voice.js?v=20261110f"></script>
-  <script src="app.js?v=20261110f"></script>
+  <script src="poster.js?v=20261111b"></script>
+  <script src="sync.js?v=20261111b"></script>
+  <script src="voice.js?v=20261111b"></script>
+  <script src="app.js?v=20261111b"></script>
 </body>
 </html>
