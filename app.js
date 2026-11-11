@@ -636,10 +636,9 @@
       // （用户不需要看到「获取地址」提示）
       const coords = state.exif.gps || null;
 
-      const [pw, ai] = await Promise.all([
-        SnapStory.resolvePlaceWeather(coords, oldPhoto),
-        SnapStory.analyzePhoto(state.photo, state.story)
-      ]);
+      // 先取天气地点，再把天气传给文案匹配（本地模板按天气排序需要）
+      const pw = await SnapStory.resolvePlaceWeather(coords, oldPhoto);
+      const ai = await SnapStory.analyzePhoto(state.photo, state.story, 0, pw.weather);
 
       const a = ai.analysis;
       const recipe = {
@@ -903,7 +902,7 @@
       SnapStory.setCurrentStyle(style);
       $("random-hint").textContent = "正在根据照片和心情写文案…";
 
-      const ai = await SnapStory.analyzePhoto(recipe.photo, recipe.story);
+      const ai = await SnapStory.analyzePhoto(recipe.photo, recipe.story, 0, recipe.weather);
       const a = ai.analysis;
       recipe.title = normalizeTitle(a.title, style);
       recipe.caption = a.caption || SnapStory.FALLBACK_CAPTIONS[style];
@@ -976,7 +975,7 @@
     try {
       state.copyRound += 1;
       const recipe = state.recipe;
-      const ai = await SnapStory.analyzePhoto(recipe.photo, recipe.story, state.copyRound);
+      const ai = await SnapStory.analyzePhoto(recipe.photo, recipe.story, state.copyRound, recipe.weather);
       const a = ai.analysis;
 
       recipe.blessing = a.blessing || SnapStory.FALLBACK_BLESSINGS[recipe.style];

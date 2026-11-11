@@ -88,13 +88,35 @@
     "平静": ["愿日子不慌不忙，心里安安稳稳", "愿心里常有这样的平静", "慢一点，日子更有味", "愿今天的好，慢慢留在心里"]
   };
   const OBJECT_BLESSINGS = [
-    { re: /风扇|空调|凉风/, items: ["愿这小风扇，吹来一屋清凉", "小风扇转一转，日子也清清爽爽", "愿这阵凉风，陪你慢慢过夏天", "风扇轻轻转，心里松松快快"] },
-    { re: /花|开花|鲜花/, items: ["愿这束花，开成日子的好心情", "花开正好，愿你也正好", "愿这抹花香，留在平常日子里"] },
-    { re: /茶|喝茶/, items: ["愿这杯茶，陪你慢慢过一天", "茶香淡淡，日子也慢慢", "愿你有茶有闲，心里安然"] },
-    { re: /饭|菜|饺子|面/, items: ["愿这顿饭，吃出家的热乎气", "家常饭菜，最暖人心", "愿有人陪你，好好吃饭"] },
-    { re: /蛋糕|生日/, items: ["愿这一岁，平安喜乐", "愿生日这天，笑声围着你", "愿新的一岁，顺顺当当"] },
-    { re: /照片|相片/, items: ["愿这张照片，留住今天的好", "把今天收好，以后再慢慢看", "愿这一刻，值得常常想起"] },
-    { re: /孙子|孙女|孩子|老伴|全家/, items: ["愿身边的人，常笑常相伴", "一家人在一起，就是好日子", "愿这样的相聚，常有", "愿家里有笑，心里有暖"] }
+    { re: /风扇|空调|凉风|电扇/, items: ["愿这小风扇，吹来一屋清凉", "小风扇转一转，日子也清清爽爽", "愿这阵凉风，陪你舒舒服服过夏天", "风扇轻轻摇，心里不紧不慢"] },
+    { re: /花|开花|鲜花|种花|阳台/, items: ["愿这束花，开成今天的好心情", "花开正好，愿你的日子也正好", "愿这抹花香，留在平常的日子里", "把花开的样子收好，慢慢看也欢喜"] },
+    { re: /茶|喝茶|茶杯/, items: ["愿这杯茶，陪你慢慢过一天", "茶香淡淡，日子也慢慢", "愿你有茶有闲，心里安安稳稳"] },
+    { re: /饭|饺子|面条|做饭|厨房|包子|煮粥|汤圆/, items: ["愿这顿饭，吃出家里的热乎气", "家常饭菜，最暖人心", "愿有人陪你，好好吃饭", "烟火气里的小日子，最踏实"] },
+    { re: /蛋糕|生日|长寿面/, items: ["愿这一岁，平安喜乐", "愿生日这天，笑声围着你转", "愿新的一岁，顺顺当当", "蜡烛一吹，心愿都成真"] },
+    { re: /照片|相片|合影/, items: ["愿这张照片，留住今天的好", "把今天收好，以后再慢慢看", "愿这一刻，值得常常想起"] },
+    { re: /孙子|孙女|孩子|老伴|全家|儿女|儿子|女儿|家人/, items: ["愿身边的人，常笑常相伴", "一家人在一起，就是好日子", "愿这样的相聚，常常有", "愿家里有笑，心里有暖"] },
+    { re: /散步|公园|锻炼|太极|广场舞|跳舞|晨练/, items: ["愿每天的走动，都换来一身轻快", "公园转一转，烦恼散一半", "愿脚下的路，越走越精神"] },
+    { re: /猫|小狗|小猫|宠物|金鱼|鹦鹉/, items: ["愿这个小家伙，天天逗你开心", "有个小生命陪着，日子不孤单", "愿它毛茸茸的陪伴，暖手也暖心"] },
+    { re: /水果|苹果|橘子|西瓜|桃子|葡萄|荔枝/, items: ["愿这份甜，从嘴里甜到心里", "果子正新鲜，日子也正新鲜", "愿你尝到的每一口，都是好滋味"] },
+    { re: /菜园|种菜|萝卜|白菜|青菜|豆角/, items: ["愿这一园青翠，长成餐桌上的踏实", "自己种的菜，吃着格外香", "愿泥土里的小苗，陪你慢慢长"] },
+    { re: /夕阳|晚霞|黄昏|落日|月亮/, items: ["愿这片晚霞，替今天收个漂亮的尾", "天色温柔，愿你也温柔地过完今天", "愿黄昏的光，落在肩上都是暖的"] },
+    { re: /看书|看报|写字|毛笔|画画|字帖/, items: ["愿一笔一画，都写出心里的安静", "有书有墨，日子就有了滋味", "愿你写下的每个字，都舒展从容"] },
+    { re: /过年|春节|中秋|团圆|端午|元宵|过节/, items: ["愿过节的热闹，留在心里一整年", "团圆的日子，最值得好好收着", "愿灯火可亲，家人常聚"] },
+    { re: /落叶|秋天|银杏|桂花|红叶/, items: ["愿这一树好颜色，陪你过这个季节", "叶子黄了也好看，日子老了也有味", "愿秋风轻轻，把好心情吹给你"] },
+    { re: /买菜|市场|超市|赶集|早市/, items: ["愿菜篮子满满，日子也满满", "市集走一趟，烟火气最养人", "愿挑到的新鲜，变成桌上的欢喜"] }
+  ];
+  const WEATHER_BLESSINGS = [
+    { re: /晴/, items: ["愿今天的大晴天，把心里也晒得亮堂堂", "太阳出来了，愿好事也跟着出来", "愿这份阳光，在你心里多停一会儿"] },
+    { re: /雨/, items: ["愿雨声轻轻，把日子洗得干干净净", "下雨天也有下雨天的好，愿你不慌不忙", "愿这场雨过后，心里清清爽爽"] },
+    { re: /雪/, items: ["愿这场雪，把世界变得安安静静", "下雪的日子，愿屋里暖、心里也暖", "愿雪落无声，好事悄然而至"] },
+    { re: /阴|多云|雾/, items: ["天不晒也不冷，愿你舒舒服服过一天", "云慢慢走，愿你的日子也慢慢好", "愿这样的天气，正合你的心情"] },
+    { re: /风/, items: ["愿这阵风，把烦恼都吹散了", "风里有了凉意，愿你添衣保暖"] }
+  ];
+  const GENERAL_BLESSINGS = [
+    "愿今天的好，一直留在身边",
+    "愿平常的日子，也有小小的欢喜",
+    "把今天记下了，往后都是念想",
+    "愿你慢慢过，日日有回甘"
   ];
   const WEATHER_CODES = {
     0: "晴", 1: "多云", 2: "多云", 3: "阴", 45: "有雾", 48: "有雾",
@@ -395,12 +417,20 @@
     return list[Math.abs(Number(round) || 0) % list.length];
   }
 
-  function localBlessing(event, mood, round) {
+  // 文案池：按匹配度从高到低排序 —— 场景物件 > 天气 > 心情 > 通用
+  function buildBlessingPool(event, mood, weather) {
     const text = String(event || "");
-    for (const item of OBJECT_BLESSINGS) {
-      if (item.re.test(text)) return pickCopy(item.items, round);
-    }
-    return pickCopy(MOOD_BLESSINGS[mood], round);
+    const pool = [];
+    OBJECT_BLESSINGS.forEach((item) => { if (item.re.test(text)) pool.push.apply(pool, item.items); });
+    const w = String(weather || "");
+    if (w) WEATHER_BLESSINGS.forEach((item) => { if (item.re.test(w)) pool.push.apply(pool, item.items); });
+    (MOOD_BLESSINGS[mood] || []).forEach((s) => pool.push(s));
+    GENERAL_BLESSINGS.forEach((s) => pool.push(s));
+    return pool;
+  }
+
+  function localBlessing(event, mood, round, weather) {
+    return pickCopy(buildBlessingPool(event, mood, weather), round);
   }
 
   function localScene(event, tone) {
@@ -418,7 +448,7 @@
     return "一张记录当下生活的照片";
   }
 
-  async function localAnalysis(photoDataUrl, story, round) {
+  async function localAnalysis(photoDataUrl, story, round, weather) {
     const base = fallbackAnalysis(story);
     let tone = null;
     try {
@@ -430,7 +460,7 @@
     if (lead && tail) base.caption = `${lead}，${tail}`;
     base.emotion = mood;
     base.scene = localScene(base.event, tone);
-    base.blessing = localBlessing(base.event, mood, round);
+    base.blessing = localBlessing(base.event, mood, round, weather);
     return base;
   }
 
@@ -450,10 +480,10 @@
     };
   }
 
-  async function analyzePhoto(photoDataUrl, story, round) {
+  async function analyzePhoto(photoDataUrl, story, round, weather) {
     const cfg = getConfig();
     if (!cfg.key || !cfg.model) {
-      const base = await localAnalysis(photoDataUrl, story, round);
+      const base = await localAnalysis(photoDataUrl, story, round, weather);
       return { analysis: base, aiUsed: false, reason: "未配置 AI" };
     }
     try {
@@ -497,7 +527,7 @@
       return { analysis: normalizeAnalysis(parsed, story), aiUsed: true };
     } catch (e) {
       console.warn("AI 调用失败：", e);
-      const base = await localAnalysis(photoDataUrl, story, round);
+      const base = await localAnalysis(photoDataUrl, story, round, weather);
       return { analysis: base, aiUsed: false, reason: e.message || "AI 调用失败" };
     }
   }
@@ -758,10 +788,10 @@
     }
 
     ctx.textAlign = "center";
-    ctx.font = font(40, false, true);
+    ctx.font = font(44, false, true);
     ctx.fillStyle = "rgb(45,40,34)";
     ctx.fillText("扫码看故事", 882, 1712);
-    ctx.font = font(36, false, false);
+    ctx.font = font(40, false, false);
     ctx.fillStyle = "rgb(130,120,108)";
     ctx.fillText("给TA留句话", 882, 1751);
     ctx.textAlign = "left";
